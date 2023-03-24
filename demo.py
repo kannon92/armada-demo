@@ -75,9 +75,10 @@ def simple_workflow():
     # Create the PodSpec for the job
     job_request_items = create_dummy_job(client)
 
-    client.submit_jobs(
-        queue=queue, job_set_id=job_set_id, job_request_items=job_request_items
-    )
+    for i in range(100):
+        client.submit_jobs(
+            queue=queue, job_set_id=job_set_id, job_request_items=job_request_items
+        )
 
 
 if __name__ == "__main__":
