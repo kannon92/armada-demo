@@ -49,7 +49,6 @@ def submit_sleep_job():
         submit_pb2.JobSubmitRequestItem(
             priority=1,
             pod_spec=pod,
-            namespace="personal-anonymous",
             annotations={"armadaproject.io/hello": "world"},
         )
     ]
@@ -69,8 +68,14 @@ with DAG(
     The ArmadaOperator requires a python client and a JobServiceClient
     so we initialize them and set up their channel arguments.
     """
+    channel_credentials = grpc.ssl_channel_credentials()
+    channel = grpc.secure_channel(
+            f"armada.demo.armadaproject.io:443",
+            channel_credentials,
+    )
+
     no_auth_client = ArmadaClient(
-        channel=grpc.insecure_channel(target="armada.demo.armadaproject.io:443")
+        channel=channel
     )
     job_service_client = JobServiceClient(
         channel=grpc.insecure_channel(target="127.0.0.1:60003")
